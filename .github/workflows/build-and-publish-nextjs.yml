@@ -1,12 +1,15 @@
-name: build-and-publish-golang.yml
+name: build-and-publish-nextjs.yml
 on:
   workflow_dispatch:
   pull_request:
     branches:
       - development
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/build-and-publish-nextjs.yml'
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository }}-frontend
 
 jobs:
   build-and-push-image:
@@ -42,7 +45,7 @@ jobs:
         id: push
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
-          context: .
+          context: ./frontend
           push: true
           tags: |
             ${{ steps.meta.outputs.tags}}

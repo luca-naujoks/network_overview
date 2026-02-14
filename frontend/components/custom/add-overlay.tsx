@@ -17,7 +17,7 @@ interface DeviceFormData {
     domain: string;
 }
 
-export function AddOverlay({visible, close}: {visible: boolean, close: () => void}) {
+export function AddOverlay({visible, close}: { visible: boolean, close: () => void }) {
     const [formData, setFormData] = useState<DeviceFormData>({
         name: '',
         ipAddress: '',
@@ -30,7 +30,7 @@ export function AddOverlay({visible, close}: {visible: boolean, close: () => voi
     const [error, setError] = useState<string | null>(null);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData(prev => ({
             ...prev,
             [name]: value
@@ -78,7 +78,7 @@ export function AddOverlay({visible, close}: {visible: boolean, close: () => voi
             });
 
             if (!response.ok) {
-                throw new Error('Failed to add device');
+                console.log(new Error('Failed to add device'))
             }
 
             const result = await response.json();
@@ -117,8 +117,9 @@ export function AddOverlay({visible, close}: {visible: boolean, close: () => voi
         close();
     };
 
-    return(
-        <div className={visible ? "flex fixed inset-0 items-center justify-center w-full h-full bg-black/50 z-50" : "hidden"}>
+    return (
+        <div
+            className={visible ? "flex fixed inset-0 items-center justify-center w-full h-full bg-black/50 z-50" : "hidden"}>
             <Card className={"w-full max-w-lg h-fit p-2"}>
                 <CardHeader className={"flex flex-row items-center justify-between border-b-2 pb-2"}>
                     <h3>Add New Device</h3>

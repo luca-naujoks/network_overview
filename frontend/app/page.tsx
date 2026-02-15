@@ -10,6 +10,7 @@ import {ThemeToggle} from "@/components/custom/theme-toggle";
 import {AddOverlay} from "@/components/custom/add-overlay";
 import {ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger} from "@/components/ui/context-menu";
 import {StatCard} from "@/components/custom/stat-card";
+import {Card} from "@/components/ui/card";
 
 export default function Home() {
     const {theme, setTheme} = useTheme()
@@ -98,6 +99,15 @@ export default function Home() {
                         )}
                     </div> :
                     <div id={"list_view"} className={"flex flex-col gap-4"}>
+                        <Card className={"w-full px-4 py-2"}>
+                            <div className={"grid grid-cols-5 w-full items-center text-sm text-muted-foreground"}>
+                                <span>Name & Type</span>
+                                <span>ipAddress</span>
+                                <span>service</span>
+                                <span>port</span>
+                                <span>domain</span>
+                            </div>
+                        </Card>
                         {devices?.map((device: DeviceCardProps) =>
                             <ContextMenuWrapper id={device.id} key={device.id} fetchDevices={fetchDevices}>
                                 <DeviceRow props={device}/>

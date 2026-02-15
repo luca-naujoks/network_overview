@@ -3,6 +3,9 @@ package internal
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -35,12 +38,49 @@ type DeviceProps struct {
 	LastChecked string       `json:"lastChecked"`
 }
 
-func StartSQLite() *sql.DB {
-	databaseLocation := "./db/sqlite3.db"
+func NewDB(dsn string) error {
+	if dsn == "" {
+		dsn = "./db/sqlite3.db"
+	}
 
-	fmt.Printf("Checking Database Location at: %s...\n", databaseLocation)
+	dir := filepath.Dir(dsn)
+	err := os.MkdirAll(dir, 0755)
+	if err != nil {
+		return fmt.Errorf("failed to create database directory: %w", err)
+	}
 
-	db, err := sql.Open("sqlite3", databaseLocation)
+	absPath, err := filepath.Abs(dsn)
+	if err != nil {
+		return fmt.Errorf("failed to get absolute path: %w", err)
+	}
+
+	db, err := sql.Open("sqlite3", absPath)
+	if err != nil {
+		return fmt.Errorf("failed to open database: %w", err)
+	}
+
+	err = db.Ping()
+	if err != nil {
+		defer func(db *sql.DB) {
+			err := db.Close()
+			if err != nil {
+				log.Printf("failed to close database: %v", err)
+			}
+		}(db)
+		return fmt.Errorf("failed to ping database: %w", err)
+	}
+
+	return nil
+}
+
+func StartSQLite(dns string) *sql.DB {
+	if dns == "" {
+		dns = "/db/sqlite3.db"
+	}
+
+	fmt.Printf("Checking Database Location at: %s...\n", dns)
+
+	db, err := sql.Open("sqlite3", dns)
 	if err != nil {
 		fmt.Printf("error opening sqlite db: %s \n", err)
 	}

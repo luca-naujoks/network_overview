@@ -11,7 +11,9 @@ import (
 )
 
 func main() {
-	db := internal.StartSQLite()
+	dbDns := "./db/sqlite3.db"
+	err := internal.NewDB(dbDns)
+	db := internal.StartSQLite(dbDns)
 	r := gin.Default()
 
 	r.Use(cors.New(cors.Config{
@@ -74,7 +76,7 @@ func main() {
 
 	//go taskRunner(db)
 
-	err := r.Run()
+	err = r.Run()
 	if err != nil {
 		panic(err)
 	}
